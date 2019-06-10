@@ -36,6 +36,6 @@ if __name__=='__main__':
         os.makedirs('data/test')
     except: pass
 
-    drive = get_credentials()
+    drive = get_credentials(colab=True)
     downloader(drive, 'train', '15_I4PO9mYgNsSlHpk8hbYBdg011xhC2e')
     downloader(drive, 'test', '1qSD5Yu-BqF4iF1GOaR9EzFA87vAIrQny')
