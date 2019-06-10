@@ -1,19 +1,14 @@
+import os
 import tensorflow as tf
+import pandas as pd
+import matplotlib.pyplot as plt
 
-def prepare_dataset(img, model=None, size=(32, 32)):
-    if model:
-        pass
-    else:
-        img = tf.image.resize(image, size=size)
-        img = image / 255.0
-    return img
-
-def build_source_from_metada(metadata_path, data_dir, mode):
-    df.read_csv(metadata_path)
+def build_source_from_metadata(metadata, data_dir, mode):
+    df = metadata.copy()
     df = df[df['split'] == mode]
-    df['filepath'] = df['filename'].apply(lambda x: os.path.join(data_dir, x))
+    df['filepath'] = df['filename'].apply(lambda x: os.path.join(data_dir, mode, x))
 
-    sources = list(zip(df['filepath'], df['name']))
+    sources = list(zip(df['filepath'], df['name'].apply(int)))
     return sources
 
 def augment_image(img):
@@ -25,12 +20,13 @@ def load(raw):
     img = tf.io.decode_jpeg(img)
     return img, raw['label']
 
-def make_dataset(source, training=False, batch_size=1, num_epochs=1,
-               num_parallel_calls=1, shuffle_buffer_size=None):
+def make_dataset(sources, preprocess, training=False, batch_size=1,
+               num_epochs=1, num_parallel_calls=1, shuffle_buffer_size=None):
+
     if not shuffle_buffer_size:
         shuffle_buffer_size = batch_size * 4
 
-    image, labels = zip(*souces)
+    image, label = zip(*sources)
 
     ds = tf.data.Dataset.from_tensor_slices({
         'image' : list(image),
@@ -41,7 +37,7 @@ def make_dataset(source, training=False, batch_size=1, num_epochs=1,
         ds.shuffle(shuffle_buffer_size)
 
     ds = ds.map(load, num_parallel_calls=num_parallel_calls)
-    ds = ds.map(lambda x, y: (preprocess_image(x), y))
+    ds = ds.map(lambda x, y: preprocess(x, y))
 
     if training:
         ds.map(lambda x, y: (augment_image(x), y))
@@ -52,12 +48,12 @@ def make_dataset(source, training=False, batch_size=1, num_epochs=1,
 
     return ds
 
-def imshow_batch_of_three(batch, show_label=True, label_map=None):
+def imshow_batch_of_three(batch, label_map=None, show_label=True):
     label_batch = batch[1].numpy()
-    image_batch = batch[1].numpy()
+    image_batch = batch[0].numpy()
 
     if not label_map:
-        label_map = list(range(label_batch.max()))
+        label_map = list(range(label_batch.max() + 1))
 
     fig, axarr = plt.subplots(1, 3, figsize=(15, 5), sharey=True)
     for i in range(3):

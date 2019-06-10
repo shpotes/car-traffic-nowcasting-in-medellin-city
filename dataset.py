@@ -33,12 +33,9 @@ def downloader(drive, set_name, drive_id, path='data/'):
 if __name__=='__main__':
     try:
         os.makedirs('data/train')
-    except: pass
-
-    try:
         os.makedirs('data/test')
     except: pass
 
     drive = get_credentials()
-    downloader(drive, 'train', '1SvuU3vaYQyXyZrr-zvp6nWv-DDerkCyj')
-    downloader(drive, 'test', '1zgjWy61Cb8GwikwJOwhZA1j3266dFW_F')
+    downloader(drive, 'train', '15_I4PO9mYgNsSlHpk8hbYBdg011xhC2e')
+    downloader(drive, 'test', '1qSD5Yu-BqF4iF1GOaR9EzFA87vAIrQny')
