@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def build_source_from_metadata(metadata, data_dir, mode):
-    df = metadata.copy()
+    df = metadata.copy().sample(frac=1).reset_index(drop=True)
     df = df[df['split'] == mode]
     df['filepath'] = df['filename'].apply(lambda x: os.path.join(data_dir, mode, x))
 

@@ -6,11 +6,9 @@ import pandas as pd
 from utils import build_source_from_metadata, make_dataset
 from tensorflow.keras import Sequential
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Flatten, Dense, Conv2D, AveragePooling2D, Input
+from tensorflow.keras.layers import Flatten, Dense, Conv2D \
+    AveragePooling2D, Input, MaxPooling2D
 
-# TODO: LeNet
-# TODO: AlexNet
-# TODO: VGG16
 # TODO: ResNet
 
 class _Model:
@@ -145,17 +143,81 @@ class LeNet(_Model):
         F6 = Dense(84, activation='tanh', name='F6')(C5)
         OUTPUT = Dense(num_classes, activation='softmax', name='output')(F6)
 
-        model = Model(INPUT, OUTPUT)
-        return model
+        return Model(INPUT, OUTPUT)
+
+class AlexNet(_Model):
+    # TODO: add kernel_regularizer
+    def _ConvBlock(x, *args, **kwargs):
+        x = Conv2D(*args, **kwargs)(x)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        return x
+
+    def build_model(self):
+        size = self.config['model']['input_size'] + [3]
+        num_classes = len(self.config['model']['labels'])
+        INPUT = Input(shape=size)
+        x = ConvBlock(Input, 96, (11, 11), strides=1)
+        x = MaxPooling2D((2, 2), strides=2)(x)
+        x = ConvBlock(x, 256, (5, 5), strides=1)
+        x = MaxPooling2D((3, 3), strides=2)(x)
+
+        for f in [384, 384, 256]:
+            x = _Conv2D(f, (3, 3), strides=1, activation='relu')(x)
+
+        x = Flatten()(x)
+        x = Dense(4096, activation='relu')(x)
+        x = Dense(4096, activation='relu')(x)
+        OUTPUT = Dense(num_classes, activation='softmax')(x)
+
+        return Model(INPUT, OUTPUT)
 
 class VGG16(_Model):
+    def _ConvBlock(x, filters, kernel_size=(3, 3), rep=2, **kwargs):
+        for _ in range(rep):
+            x = Conv2D(filters, kernel_size,
+                       activation='relu', **kwargs)(x)
+
+        MaxPooling2D((2, 2))(x)
+        return x
+
     def build_model(self):
         size = self.config['model']['input_size'] + [3]
         num_classes = len(self.config['model']['labels'])
 
-        INPUT = Input(shape=size)
-        # TODO: VGG Like here
-        OUTPUT = Dense(num_classes, activation='softmax', name='output')(x)
+        Input = Input(shape=size)
+
+        x = _ConvBlock(Input, 64)
+        x = _ConvBlock(x, 128)
+        x = _ConvBlock(x, 256)
+        x = _ConvBlock(x, 512, rep=3)
+        x = _ConvBlock(x, 512, rep=3)
+
+        x = Dense(4096, activation='relu')(x)
+        x = Dense(4096, activation='relu')(x)
+        x = Dense(1000, activation='relu')(x)
+
+        OUTPUT = Dense(num_classes, activation='softmax')(x)
 
         model = Model(INPUT, OUTPUT)
         return model
+
+
+class ResNet(_Model):
+    def ResBlock(x, filters, kernel_size=(3, 3), bottleneck=False):
+        # See ArXiv:1603.05027
+        shortcut = x
+
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        x = Conv2D(filters, kernel_size, padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        x = Conv2D(filters, kernel_size, padding='same')(x)
+
+        if bottleneck:
+            shortcut = Conv2D(filters, (1, 1), padding='same')(shortcut)
+
+        x = tf.keras.layers.add([shortcut, x])
+
+        return x
