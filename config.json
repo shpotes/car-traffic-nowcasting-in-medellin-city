@@ -3,8 +3,8 @@
         "metadata_path" : "data/metadata.csv",
         "data_path"     : "data",
 
-        "architecture"  : "lenet",
-        "input_size"    : [32, 32],
+        "architecture"  : "vgg",
+        "input_size"    : [244, 244],
         "labels"        : ["bus", "car", "motorcycle", "taxi", "truck"]
     },
 
