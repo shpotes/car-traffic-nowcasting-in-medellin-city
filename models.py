@@ -204,7 +204,7 @@ class VGG16(_Model):
 
 
 class ResNet(_Model):
-    def ResBlock(x, filters, kernel_size=(3, 3), bottleneck=False):
+    def ResBlock(x, filters, kernel_size=(3, 3), bottleneck=0):
         # See ArXiv:1603.05027
         shortcut = x
 
@@ -216,8 +216,28 @@ class ResNet(_Model):
         x = Conv2D(filters, kernel_size, padding='same')(x)
 
         if bottleneck:
-            shortcut = Conv2D(filters, (1, 1), padding='same')(shortcut)
+            shortcut = Conv2D(bottleneck, (1, 1), padding='same')(shortcut)
 
         x = tf.keras.layers.add([shortcut, x])
 
         return x
+
+    def build_model(self):
+        size = self.config['model']['input_size'] + [3]
+        num_classes = len(self.config['model']['labels'])
+
+        INPUT = Input(shape=size)
+        x = Conv2D(64, (7, 7), strides=2)(INPUT)
+        x = MaxPooling2D((3, 3))
+
+        for i in range(4):
+            for _ in range(2):
+                x = ResBlock(x, 2 ** (5 + i))
+            if i < 4:
+                x = ResBlock(x, 2 ** (5 + i), bottleneck=2 ** (6 + i))
+            else:
+                x = tf.keras.layer.GlobalAveragePooling2D()
+
+        OUTPUT = Dense(num_classes, activation='softmax')
+
+        return Model(INPUT, OUTPUT)
