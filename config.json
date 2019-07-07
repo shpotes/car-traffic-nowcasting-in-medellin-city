@@ -3,7 +3,7 @@
         "metadata_path" : "data/metadata.csv",
         "data_path"     : "data",
 
-        "architecture"  : "linear",
+        "architecture"  : "lenet",
         "input_size"    : [32, 32],
         "labels"        : ["bus", "car", "motorcycle", "taxi", "truck"]
     },
@@ -11,7 +11,7 @@
     "train" : {
         "batch_size"       : 16,
         "learning_rate"    : 3e-4,
-        "num_epochs"       : 50,
+        "num_epochs"       : 100,
         "over_epochs"      : 20,
         "metrics"          : ["accuracy"]
     }
