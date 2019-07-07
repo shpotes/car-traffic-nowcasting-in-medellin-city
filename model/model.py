@@ -71,9 +71,35 @@ class AlexNet(_Model):
         return model
 
 class VGG16(_Model):
-    # TODO: Fix it!
-    pass
-
+    def build_model(self):
+        size = self.config['model']['input_size'] + [3]
+        num_classes = len(self.config['model']['labels'])
+        
+        model = Sequential([
+            Conv2D(64, (3, 3), activation='relu', input_shape=size),
+            Conv2D(64, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Conv2D(128, (3, 3), activation='relu'),
+            Conv2D(128, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Conv2D(256, (3, 3), activation='relu'),
+            Conv2D(256, (3, 3), activation='relu'),
+            Conv2D(256, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Conv2D(512, (3, 3), activation='relu'),
+            Conv2D(512, (3, 3), activation='relu'),
+            Conv2D(512, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Conv2D(512, (3, 3), activation='relu'),
+            Conv2D(512, (3, 3), activation='relu'),
+            Conv2D(512, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Dense(4096, activation='relu'),
+            Dense(4096, activation='relu'),
+            Dense(num_classes, activation='softmax')
+        ])
+        
+        return model
 
 class ResNet(_Model):
     def build_model(self):
