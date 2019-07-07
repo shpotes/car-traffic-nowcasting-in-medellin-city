@@ -11,7 +11,7 @@
     "train" : {
         "batch_size"       : 16,
         "learning_rate"    : 3e-4,
-        "num_epochs"       : 400,
+        "num_epochs"       : 50,
         "over_epochs"      : 20,
         "metrics"          : ["accuracy"]
     }
