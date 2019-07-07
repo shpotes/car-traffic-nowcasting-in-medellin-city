@@ -13,9 +13,9 @@ class ResBlock(Layer):
             if bottleneck else lambda x: x
 
     def call(self, inputs):
-        shortcut = x
+        shortcut = inputs
         
-        x = self.bn1(x)
+        x = self.bn1(inputs)
         x = tf.nn.relu(x)
         x = self.conv1(x)
         x = self.bn2(x)
