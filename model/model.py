@@ -1,4 +1,4 @@
-import model.layer as layers
+from model.layer import ResBlock
 from model._model import _Model
 from tensorflow.keras import Sequential
 from tensorflow.keras.models import Model
@@ -119,10 +119,9 @@ class ResNet(_Model):
 
         for i in range(4):
             for _ in range(2):
-                model.add(layers.ResBlock(2 ** (5 + i)))
+                model.add(ResBlock(2 ** (5 + i)))
             if i < 4:
-                model.add(layers.ResBlock(2 ** (5 + i), 
-                                          bottleneck=2 ** (6 + i)))
+                model.add(ResBlock(2 ** (5 + i), bottleneck=2 ** (6 + i)))
             else:
                 model.add(tf.keras.layers.GlobalAveragePooling2D())
 
