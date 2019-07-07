@@ -71,6 +71,9 @@ class AlexNet(_Model):
         return model
 
 class VGG16(_Model):
+    def callbacks(self):
+        return [ReduceLROnPlateau()]
+
     def build_model(self):
         size = self.config['model']['input_size'] + [3]
         num_classes = len(self.config['model']['labels'])
