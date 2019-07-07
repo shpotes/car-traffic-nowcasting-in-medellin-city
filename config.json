@@ -9,10 +9,10 @@
     },
 
     "train" : {
-        "batch_size"       : 16,
-        "learning_rate"    : 3e-4,
+        "batch_size"       : 12,
+        "learning_rate"    : 1e-5,
         "num_epochs"       : 100,
-        "over_epochs"      : 50,
+        "over_epochs"      : 60,
         "metrics"          : ["accuracy"]
     }
 }
