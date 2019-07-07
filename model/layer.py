@@ -9,8 +9,8 @@ class ResBlock(Layer):
         self.bn2 = BatchNormalization()
         self.conv2 = Conv2D(filters, kernel_size, padding='same')
         
-        self.bottleneck = Conv2D(bottleneck, (1, 1), padding='same') \
-            if bottleneck else lambda x: x
+        if bottleneck:
+            self.bottleneck = Conv2D(bottleneck, (1, 1), padding='same')
 
     def call(self, inputs):
         shortcut = inputs
@@ -21,8 +21,9 @@ class ResBlock(Layer):
         x = self.bn2(x)
         x = tf.nn.relu(x)
         x = self.conv2(x)
-
-        self.bottleneck(shortcut)
+        
+        if bottleneck:
+            self.bottleneck(shortcut)
 
         x = add([shortcut, x])
         return x
