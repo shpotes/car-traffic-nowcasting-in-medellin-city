@@ -12,7 +12,7 @@ class ResBlock(Layer):
         if bottleneck:
             self.bottleneck = Conv2D(bottleneck, (1, 1), padding='same')
         else:
-            bottleneck = None
+            self.bottleneck = None
 
     def call(self, inputs):
         shortcut = inputs
@@ -24,7 +24,7 @@ class ResBlock(Layer):
         x = tf.nn.relu(x)
         x = self.conv2(x)
         
-        if bottleneck:
+        if self.bottleneck:
             self.bottleneck(shortcut)
 
         x = add([shortcut, x])
