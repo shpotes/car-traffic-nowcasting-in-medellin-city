@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import add, Layer, BatchNormalization, Conv2D
 
 class ResBlock(Layer):
-    def __init__(self, filtes, kernel_size, bottleneck=0):
+    def __init__(self, filtes, kernel_size=(3, 3), bottleneck=0):
         super(ResBlock, self).__init__()
         self.bn1 = BatchNormalization()
         self.conv1 = Conv2D(filters, kernel_size, padding='same')
