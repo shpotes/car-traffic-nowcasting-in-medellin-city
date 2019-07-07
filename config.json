@@ -12,7 +12,7 @@
         "batch_size"       : 16,
         "learning_rate"    : 3e-4,
         "num_epochs"       : 100,
-        "over_epochs"      : 20,
+        "over_epochs"      : 50,
         "metrics"          : ["accuracy"]
     }
 }
