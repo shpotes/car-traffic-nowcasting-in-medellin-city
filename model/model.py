@@ -82,7 +82,7 @@ class VGG16(_Model):
         size = self.config['model']['input_size'] + [3]
         num_classes = len(self.config['model']['labels'])
 
-        INPUT = Input(shape=size)
+        INPUT = Activation('linear', input_shape=size)
         x = self._ConvBlock(INPUT, 64)
         x = self._ConvBlock(x, 128)
         x = self._ConvBlock(x, 256)
