@@ -1,4 +1,4 @@
-import model.layer
+import model.layer as layers
 from model._model import _Model
 from tensorflow.keras import Sequential
 from tensorflow.keras.models import Model
