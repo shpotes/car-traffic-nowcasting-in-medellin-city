@@ -11,6 +11,8 @@ class ResBlock(Layer):
         
         if bottleneck:
             self.bottleneck = Conv2D(bottleneck, (1, 1), padding='same')
+        else:
+            bottleneck = None
 
     def call(self, inputs):
         shortcut = inputs
