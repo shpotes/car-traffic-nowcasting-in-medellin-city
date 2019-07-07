@@ -49,6 +49,8 @@ class _Model:
         self.train_data, self.val_data, self.test_data = create_data(self, overfit_mode)
 
     def train(self):
+        self.load_data(self.overfit_mode)
+
         LR = self.config['train']['learning_rate']
         NUM_EPOCHS = self.config['train']['over_epochs'] \
             if self.overfit_mode else self.config['train']['num_epochs']
@@ -62,6 +64,7 @@ class _Model:
                               callbacks=self.callbacks())
 
     def evaluate(self):
+        self.load_data(self.overfit_mode)
         print('train')
         self.model.evaluate(self.train_data)
         print('test')
