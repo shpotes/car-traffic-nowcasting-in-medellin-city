@@ -71,32 +71,9 @@ class AlexNet(_Model):
         return model
 
 class VGG16(_Model):
-    def _ConvBlock(self, x, filters, kernel_size=(3, 3), rep=2):
-        for _ in range(rep):
-            x = Conv2D(filters, kernel_size, activation='relu')(x)
+    # TODO: Fix it!
+    pass
 
-        x = MaxPooling2D((2, 2))(x)
-        return x
-
-    def build_model(self):
-        size = self.config['model']['input_size'] + [3]
-        num_classes = len(self.config['model']['labels'])
-
-        INPUT = Activation('linear', input_shape=size)
-        x = self._ConvBlock(INPUT, 64)
-        x = self._ConvBlock(x, 128)
-        x = self._ConvBlock(x, 256)
-        x = self._ConvBlock(x, 512, rep=3)
-        x = self._ConvBlock(x, 512, rep=3)
-
-        x = Dense(4096, activation='relu')(x)
-        x = Dense(4096, activation='relu')(x)
-        x = Dense(1000, activation='relu')(x)
-
-        OUTPUT = Dense(num_classes, activation='softmax')(x)
-
-        model = Model(INPUT, OUTPUT)
-        return model
 
 class ResNet(_Model):
     def build_model(self):
