@@ -3,16 +3,16 @@
         "metadata_path" : "data/metadata.csv",
         "data_path"     : "data",
 
-        "architecture"  : "vgg16",
+        "architecture"  : "resnet",
         "input_size"    : [224, 224],
         "labels"        : ["bus", "car", "motorcycle", "taxi", "truck"]
     },
 
     "train" : {
-        "batch_size"       : 12,
+        "batch_size"       : 16,
         "learning_rate"    : 1e-5,
         "num_epochs"       : 100,
-        "over_epochs"      : 60,
+        "over_epochs"      : 20,
         "metrics"          : ["accuracy"]
     }
 }
