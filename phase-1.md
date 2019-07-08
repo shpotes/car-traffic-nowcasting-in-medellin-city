@@ -22,7 +22,6 @@ The preprocessing used was quite simple, basically the images were resized so th
 **TODO**
 
 ---
----
 
 ### Architecture 1: linear model
  * Git Hash: [c465ec8](https://github.com/shpotes/image-classification/tree/c465ec817a07d5d88636352c2c5febfe345870fc)
@@ -51,10 +50,10 @@ The idea of this experiment is to validate that your model has enough predictive
 ```
 **sample predictions**:
 <img src="res/linear_model/real/predictions.png">
-**confusion matrix**:
+
+**confusion matrix**:<br>
 <img src="res/linear_model/real/confusion.png" width="50%" height="50%">
 
----
 ---
 
 ### Architecture 2: LeNet
@@ -86,10 +85,11 @@ The idea of this experiment is to validate that your model has enough predictive
 ```
 **sample predictions**:
 <img src="res/lenet/real/predictions.png">
-**confusion matrix**:
+
+
+**confusion matrix**:<br>
 <img src="res/lenet/real/confusion.png" width="50%" height="50%">
 
----
 ---
 
 ### Architecture 3: AlexNet
@@ -120,10 +120,11 @@ The idea of this experiment is to validate that your model has enough predictive
 ```
 **sample predictions**:
 <img src="res/alexnet/real/predictions.png">
-**confusion matrix**:
+
+
+**confusion matrix**:<br>
 <img src="res/alexnet/real/confusion.png" width="50%" height="50%">
 
----
 ---
 
 ### Architecture 3: VGG
@@ -154,10 +155,11 @@ The idea of this experiment is to validate that your model has enough predictive
 ```
 **sample predictions**:
 <img src="res/vgg16/real/predictions.png">
-**confusion matrix**:
+
+
+**confusion matrix**:<br>
 <img src="res/vgg16/real/confusion.png" width="50%" height="50%">
 
----
 ---
 
 ### Architecture 3: ResNet
@@ -188,10 +190,11 @@ The idea of this experiment is to validate that your model has enough predictive
 ```
 **sample predictions**:
 <img src="res/resnet/real/predictions.png">
-**confusion matrix**:
+
+
+**confusion matrix**:<br>
 <img src="res/resnet/real/confusion.png" width="50%" height="50%">
 
----
 ---
 
 References 
