@@ -5,6 +5,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import AveragePooling2D, Input, ZeroPadding2D
 from tensorflow.keras.layers import MaxPooling2D, Activation, Dropout
 from tensorflow.keras.layers import Flatten, Dense, Conv2D, BatchNormalization
+from tensorflow.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 
 
@@ -114,17 +115,20 @@ class ResNet(_Model):
         num_classes = len(self.config['model']['labels'])
         
         model = Sequential([Input(shape=size), 
-                            Conv2D(64, (7, 7), strides=2),
-                            MaxPooling2D((3, 3))])
-
-        for i in range(4):
+                            ZeroPadding2D((3, 3)),
+                            Conv2D(64, (7, 7), strides=2, activation='relu'),
+                            ZeroPadding2D((1, 1)),
+                            MaxPooling2D((3, 3), strides=2)])
+        for i in range(3):
             for _ in range(2):
-                model.add(ResBlock(2 ** (5 + i)))
-            if i < 4:
-                model.add(ResBlock(2 ** (5 + i), bottleneck=2 ** (6 + i)))
-            else:
-                model.add(tf.keras.layers.GlobalAveragePooling2D())
-
+                model.add(ResBlock(2 ** (6 + i)))
+            model.add(ResBlock(2 ** (7 + i), bottleneck=2 ** (7 + i)))
+            model.add(ZeroPadding2D((1, 1)))
+            model.add(Conv2D(2 ** (7 + i), (3,3), strides=2, activation='relu'))
+        
+        model.add(GlobalAveragePooling2D())
+        model.add(Flatten())
+        model.add(Dense(num_classes, activation='softmax'))
         return model
 
 class GoogleNet(_Model):

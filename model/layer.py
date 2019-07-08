@@ -5,12 +5,14 @@ class ResBlock(Layer):
     def __init__(self, filters, kernel_size=(3, 3), bottleneck=0):
         super(ResBlock, self).__init__()
         self.bn1 = BatchNormalization()
-        self.conv1 = Conv2D(filters, kernel_size, padding='same')
+        self.conv1 = Conv2D(filters, kernel_size, padding='same',
+                            use_bias=False, activation='relu')
         self.bn2 = BatchNormalization()
-        self.conv2 = Conv2D(filters, kernel_size, padding='same')
+        self.conv2 = Conv2D(filters, kernel_size, padding='same',
+                            use_bias=False, activation='relu')
         
         if bottleneck:
-            self.bottleneck = Conv2D(bottleneck, (1, 1), padding='same')
+            self.bottleneck = Conv2D(bottleneck, (1, 1), activation='relu')
         else:
             self.bottleneck = None
 
@@ -25,7 +27,7 @@ class ResBlock(Layer):
         x = self.conv2(x)
         
         if self.bottleneck:
-            self.bottleneck(shortcut)
+            shortcut = self.bottleneck(shortcut)
 
         x = add([shortcut, x])
         return x
