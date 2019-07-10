@@ -85,7 +85,7 @@ class _Model:
         print('train')
         self.model.evaluate(self.train_data)
         print('test')
-        self.model.evaluate(self.test_data)
+        return self.model.evaluate(self.test_data)
 
     def predict(self, ds):
         return self.model.predict(ds)
