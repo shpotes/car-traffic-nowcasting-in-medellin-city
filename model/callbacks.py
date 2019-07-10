@@ -7,3 +7,6 @@ def reduceLR(model):
 
 def tensorboard(model):
     return 
+
+def custom_calls(model):
+    return [reduceLR(model)]
