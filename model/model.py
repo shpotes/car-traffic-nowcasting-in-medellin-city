@@ -1,4 +1,5 @@
 from model.layer import ResBlock
+from model.callbacks import custom_calls
 from model._model import _Model
 from tensorflow.keras import Sequential
 from tensorflow.keras.models import Model
@@ -6,7 +7,7 @@ from tensorflow.keras.layers import AveragePooling2D, Input, ZeroPadding2D
 from tensorflow.keras.layers import MaxPooling2D, Activation, Dropout
 from tensorflow.keras.layers import Flatten, Dense, Conv2D, BatchNormalization
 from tensorflow.keras.layers import GlobalAveragePooling2D
-from tensorflow.keras.callbacks import ReduceLROnPlateau
+
 
 
 class LinearModel(_Model):
@@ -72,10 +73,8 @@ class AlexNet(_Model):
         return model
 
 class VGG16(_Model):
-    def callbacks(self):
-        return [
-            ReduceLROnPlateau(patience=5, verbose=1, mode='auto')
-        ]
+    def callbacks(self, callbacks):
+        return custom_calls(self, callbacks)
 
     def build_model(self):
         size = self.config['model']['input_size'] + [3]
@@ -110,22 +109,24 @@ class VGG16(_Model):
         return model
 
 class ResNet(_Model):
-    def build_model(self):
+    def build_model(self, **kwargs):
         size = self.config['model']['input_size'] + [3]
         num_classes = len(self.config['model']['labels'])
         
         model = Sequential([Input(shape=size), 
                             ZeroPadding2D((3, 3)),
-                            Conv2D(64, (7, 7), strides=2, activation='relu'),
+                            Conv2D(2 ** L, (7, 7), strides=2,
+                                   activation='relu'),
                             ZeroPadding2D((1, 1)),
                             MaxPooling2D((3, 3), strides=2)])
-        for i in range(3):
-            for _ in range(2):
-                model.add(ResBlock(2 ** (6 + i)))
-            model.add(ResBlock(2 ** (7 + i), bottleneck=2 ** (7 + i)))
+        for i in range(N):
+            for _ in range(rep):
+                model.add(ResBlock(2 ** (L + i)))
+            model.add(ResBlock(2 ** (L + i + 1), bottleneck=2 ** (L + i + 1)))
             model.add(ZeroPadding2D((1, 1)))
-            model.add(Conv2D(2 ** (7 + i), (3,3), strides=2, activation='relu'))
-        
+            model.add(Conv2D(2 ** (L + i + 1), (3,3), strides=2,
+                             activation='relu'))
+
         model.add(GlobalAveragePooling2D())
         model.add(Flatten())
         model.add(Dense(num_classes, activation='softmax'))
