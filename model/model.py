@@ -109,7 +109,7 @@ class VGG16(_Model):
         return model
 
 class ResNet(_Model):
-    def build_model(self, **kwargs):
+    def build_model(self, N=3, resp=2, L=6):
         size = self.config['model']['input_size'] + [3]
         num_classes = len(self.config['model']['labels'])
         
