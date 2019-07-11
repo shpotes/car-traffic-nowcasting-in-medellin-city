@@ -64,7 +64,7 @@ class _Model:
     def load_data(self, overfit_mode):
         self.train_data, self.val_data, self.test_data = create_data(self, overfit_mode)
 
-    def train(self):
+    def train(self, **kwargs):
         self.load_data(self.overfit_mode)
 
         LR = self.config['train']['learning_rate']
@@ -77,7 +77,8 @@ class _Model:
 
         return self.model.fit(self.train_data, epochs=NUM_EPOCHS,
                               validation_data=self.val_data,
-                              callbacks=self.callbacks())
+                              callbacks=self.callbacks(),
+                              **kwargs)
 
     def evaluate(self):
         self.errors()
