@@ -116,7 +116,8 @@ class ResNet(_Model):
         model = Sequential([Input(shape=size), 
                             ZeroPadding2D((3, 3)),
                             Conv2D(2 ** L, (7, 7), strides=2,
-                                   activation='relu'),
+                                   activation='relu',
+                                   kernel_initializer='he_normal'),
                             ZeroPadding2D((1, 1)),
                             MaxPooling2D((3, 3), strides=2)])
         for i in range(N):
@@ -125,11 +126,12 @@ class ResNet(_Model):
             model.add(ResBlock(2 ** (L + i + 1), bottleneck=2 ** (L + i + 1)))
             model.add(ZeroPadding2D((1, 1)))
             model.add(Conv2D(2 ** (L + i + 1), (3,3), strides=2,
-                             activation='relu'))
+                             activation='relu', kernel_initializer='he_normal'))
 
         model.add(GlobalAveragePooling2D())
         model.add(Flatten())
-        model.add(Dense(num_classes, activation='softmax'))
+        model.add(Dense(num_classes, activation='softmax', 
+                        kernel_initializer='he_normal'))
         return model
 
 class GoogleNet(_Model):

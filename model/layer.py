@@ -6,13 +6,16 @@ class ResBlock(Layer):
         super(ResBlock, self).__init__()
         self.bn1 = BatchNormalization()
         self.conv1 = Conv2D(filters, kernel_size, padding='same',
-                            use_bias=False, activation='relu')
+                            use_bias=False, activation='relu', 
+                            kernel_initializer='he_normal')
         self.bn2 = BatchNormalization()
         self.conv2 = Conv2D(filters, kernel_size, padding='same',
-                            use_bias=False, activation='relu')
+                            use_bias=False, activation='relu',
+                            kernel_initializer='he_normal')
         
         if bottleneck:
-            self.bottleneck = Conv2D(bottleneck, (1, 1), activation='relu')
+            self.bottleneck = Conv2D(bottleneck, (1, 1), activation='relu',
+                                     kernel_initializer='he_normal')
         else:
             self.bottleneck = None
 
