@@ -1,3 +1,4 @@
+import tensorflow as tf
 from model.layer import ResBlock, Inception
 from model.callbacks import custom_calls
 from model._model import _Model
@@ -135,6 +136,14 @@ class ResNet(_Model):
         return model
 
 class GoogleNet(_Model):
+    def preprocess(self, img, label):
+        size = self.config['model']['input_size']
+        num_classes = len(self.config['model']['labels'])
+        img = tf.image.resize(img, size)
+        img /= 255.0
+        y = tf.one_hot(indices=label, depth=num_classes)
+        return img, (y, y, y)
+
     def build_model(self):
         size = self.config['model']['input_size'] + [3]
         num_classes = len(self.config['model']['labels'])
