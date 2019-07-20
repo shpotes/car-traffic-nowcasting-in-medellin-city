@@ -14,7 +14,9 @@ class _Model:
         if 'hyper' in self.config:
             self.model = self.build_model(**self.config['hyper'])
         else:
+            print('building model')
             self.model = self.build_model()
+        
         self.load_data(self.overfit_mode)
 
     def __str__(self):
