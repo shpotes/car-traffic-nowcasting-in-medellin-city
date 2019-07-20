@@ -3,7 +3,7 @@
         "metadata_path" : "data/metadata.csv",
         "data_path"     : "data",
 
-        "architecture"  : "resnet",
+        "architecture"  : "googlenet",
         "input_size"    : [224, 224],
         "labels"        : ["bus", "car", "motorcycle", "taxi", "truck"]
     },

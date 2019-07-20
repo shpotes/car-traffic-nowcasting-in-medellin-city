@@ -86,12 +86,7 @@ def imshow_with_predictions(model, batch, show_label=True, label_map=None):
         axarr[i].axis('off')
 
 def compute_confusion_matrix(model):
-    y_pred = np.argmax(model.predict(model.test_data), axis=-1)
-    y_true = model.test_data
-    y_true = y_true._input_dataset._input_dataset._input_dataset
-    y_true = y_true.map(lambda x, y: y).map(tf.math.argmax)
-    y_true = tf.stack(list(iter(y_true)))
-    return tf.math.confusion_matrix(y_true, y_pred)
+    return tf.math.confusion_matrix(model.y_true, model.y_pred)
     
 
 def create_data(model, overfit_mode, test=False):

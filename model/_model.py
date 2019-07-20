@@ -11,7 +11,12 @@ class _Model:
         self.config = config
         self.overfit_mode = overfit_mode
         self.metadata = pd.read_csv(self.config['model']['metadata_path'])
-        self.model = self.build_model()
+        if 'hyper' in self.config:
+            self.model = self.build_model(**self.config['hyper'])
+        else:
+            print('building model')
+            self.model = self.build_model()
+        
         self.load_data(self.overfit_mode)
 
     def __str__(self):
@@ -31,6 +36,19 @@ class _Model:
     def metrics(self):
         return ['accuracy']
 
+    def bad_predictions(self):
+        data = self.test_data._input_dataset._input_dataset._input_dataset
+        raw = tf.stack(list(iter(data.map(lambda x, y: x))))
+        mask = tf.equal(self.y_true, self.y_pred)
+        return raw[mask], self.y_true[mask], self.y_pred[mask]
+    
+    def errors(self):
+        self.y_pred = tf.convert_to_tensor(np.argmax(self.predict(self.test_data), axis=-1))
+        y_true = self.test_data
+        y_true = y_true._input_dataset._input_dataset._input_dataset
+        y_true = y_true.map(lambda x, y: y).map(tf.math.argmax)
+        self.y_true = tf.stack(list(iter(y_true)))
+
     def loss(self, *args, **kwargs):
         return tf.losses.CategoricalCrossentropy(*args, **kwargs)
 
@@ -48,7 +66,7 @@ class _Model:
     def load_data(self, overfit_mode):
         self.train_data, self.val_data, self.test_data = create_data(self, overfit_mode)
 
-    def train(self):
+    def train(self, **kwargs):
         self.load_data(self.overfit_mode)
 
         LR = self.config['train']['learning_rate']
@@ -61,14 +79,16 @@ class _Model:
 
         return self.model.fit(self.train_data, epochs=NUM_EPOCHS,
                               validation_data=self.val_data,
-                              callbacks=self.callbacks())
+                              callbacks=self.callbacks(),
+                              **kwargs)
 
     def evaluate(self):
+        self.errors()
         self.load_data(self.overfit_mode)
         print('train')
         self.model.evaluate(self.train_data)
         print('test')
-        self.model.evaluate(self.test_data)
+        return self.model.evaluate(self.test_data)
 
     def predict(self, ds):
         return self.model.predict(ds)
